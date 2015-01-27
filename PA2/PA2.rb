@@ -1,41 +1,34 @@
-#(PA) Movies Part 2, Jing Zou, 1-26-2015
+#(PA) Movies Part 2, Jing Zou, 1-27-2015
 class MovieData
 	attr_accessor :training_data
 	attr_accessor :test_data
-	#It takes a path to the folder containing the movie data (ml-100k) 
+	
 	#If there is one argument, u.data is read as the training set and the test set is empty
 	#If there are two arguments, .base is read as the training set and .test is read as the test set
 	def initialize(*args)
 		@training_data = {}
 		@test_data = {}
-		trainingcount = 0
-		testcount = 0
 		if args.length == 2 
 			training_path = args[0] + "/" + args[1].to_s + ".base"
 			test_path = args[0] + "/" + args[1].to_s + ".test"
-			test_file = open(test_path)
-			test_file.each do |line|
-				testcount += 1
-				one_line = line.chomp.split("\t")
-				one_line_movie_info = {one_line[1] => one_line[2]}
-				if @test_data[one_line[0]] == nil
-   					@test_data[one_line[0]] = one_line_movie_info
-   				else
-   					@test_data[one_line[0]][one_line[1]] = one_line[2]
-   				end
-   			end
+			load_data(@test_data, test_path)
 		else
 			training_path = args[0] + "/u.data"
 		end
-		training_file = open(training_path)		
-		training_file.each do |line|
-			trainingcount += 1
+		load_data(@training_data, training_path)
+		
+	end
+
+	#It takes a path to the folder containing the movie data (ml-100k) 
+	def load_data(data, path)
+		file = open(path)		
+		file.each do |line|
 			one_line = line.chomp.split("\t")
 			one_line_movie_info = {one_line[1] => one_line[2]}
-			if @training_data[one_line[0]] == nil
-   				@training_data[one_line[0]] = one_line_movie_info
+			if data[one_line[0]] == nil
+   				data[one_line[0]] = one_line_movie_info
    			else
-   				@training_data[one_line[0]][one_line[1]] = one_line[2]
+   				data[one_line[0]][one_line[1]] = one_line[2]
    			end
 		end
 	end

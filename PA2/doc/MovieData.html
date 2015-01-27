@@ -75,6 +75,8 @@
     
     <li ><a href="#method-c-new">::new</a>
     
+    <li ><a href="#method-i-load_data">#load_data</a>
+    
     <li ><a href="#method-i-movies">#movies</a>
     
     <li ><a href="#method-i-predict">#predict</a>
@@ -114,7 +116,7 @@
 
   <div id="description" class="description">
     
-<p>(PA) Movies Part 2, Jing Zou, 1-26-2015</p>
+<p>(PA) Movies Part 2, Jing Zou, 1-27-2015</p>
 
   </div><!-- description -->
 
@@ -182,10 +184,9 @@
 
         <div class="method-description">
           
-          <p>It takes a path to the folder containing the movie data (ml-100k)  If there
-is one argument, u.data is read as the training set and the test set is
-empty If there are two arguments, .base is read as the training set and
-.test is read as the test set</p>
+          <p>If there is one argument, u.data is read as the training set and the test
+set is empty If there are two arguments, .base is read as the training set
+and .test is read as the test set</p>
           
           
 
@@ -195,36 +196,15 @@ empty If there are two arguments, .base is read as the training set and
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
         <span class="ruby-ivar">@training_data</span> = {}
         <span class="ruby-ivar">@test_data</span> = {}
-        <span class="ruby-identifier">trainingcount</span> = <span class="ruby-value">0</span>
-        <span class="ruby-identifier">testcount</span> = <span class="ruby-value">0</span>
         <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">2</span> 
                 <span class="ruby-identifier">training_path</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;.base&quot;</span>
                 <span class="ruby-identifier">test_path</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;.test&quot;</span>
-                <span class="ruby-identifier">test_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">test_path</span>)
-                <span class="ruby-identifier">test_file</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
-                        <span class="ruby-identifier">testcount</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
-                        <span class="ruby-identifier">one_line</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\t&quot;</span>)
-                        <span class="ruby-identifier">one_line_movie_info</span> = {<span class="ruby-identifier">one_line</span>[<span class="ruby-value">1</span>] =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">one_line</span>[<span class="ruby-value">2</span>]}
-                        <span class="ruby-keyword">if</span> <span class="ruby-ivar">@test_data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]] <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span>
-                                <span class="ruby-ivar">@test_data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]] = <span class="ruby-identifier">one_line_movie_info</span>
-                        <span class="ruby-keyword">else</span>
-                                <span class="ruby-ivar">@test_data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]][<span class="ruby-identifier">one_line</span>[<span class="ruby-value">1</span>]] = <span class="ruby-identifier">one_line</span>[<span class="ruby-value">2</span>]
-                        <span class="ruby-keyword">end</span>
-                <span class="ruby-keyword">end</span>
+                <span class="ruby-identifier">load_data</span>(<span class="ruby-ivar">@test_data</span>, <span class="ruby-identifier">test_path</span>)
         <span class="ruby-keyword">else</span>
                 <span class="ruby-identifier">training_path</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/u.data&quot;</span>
         <span class="ruby-keyword">end</span>
-        <span class="ruby-identifier">training_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">training_path</span>)           
-        <span class="ruby-identifier">training_file</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
-                <span class="ruby-identifier">trainingcount</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
-                <span class="ruby-identifier">one_line</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\t&quot;</span>)
-                <span class="ruby-identifier">one_line_movie_info</span> = {<span class="ruby-identifier">one_line</span>[<span class="ruby-value">1</span>] =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">one_line</span>[<span class="ruby-value">2</span>]}
-                <span class="ruby-keyword">if</span> <span class="ruby-ivar">@training_data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]] <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span>
-                        <span class="ruby-ivar">@training_data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]] = <span class="ruby-identifier">one_line_movie_info</span>
-                <span class="ruby-keyword">else</span>
-                        <span class="ruby-ivar">@training_data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]][<span class="ruby-identifier">one_line</span>[<span class="ruby-value">1</span>]] = <span class="ruby-identifier">one_line</span>[<span class="ruby-value">2</span>]
-                <span class="ruby-keyword">end</span>
-        <span class="ruby-keyword">end</span>
+        <span class="ruby-identifier">load_data</span>(<span class="ruby-ivar">@training_data</span>, <span class="ruby-identifier">training_path</span>)
+        
 <span class="ruby-keyword">end</span></pre>
           </div><!-- new-source -->
           
@@ -240,6 +220,48 @@ empty If there are two arguments, .base is read as the training set and
   
      <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
       <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-load_data" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">load_data</span><span
+            class="method-args">(data, path)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>It takes a path to the folder containing the movie data (ml-100k)</p>
+          
+          
+
+          
+          <div class="method-source-code" id="load_data-source">
+            <pre><span class="ruby-comment"># File PA2.rb, line 23</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">load_data</span>(<span class="ruby-identifier">data</span>, <span class="ruby-identifier">path</span>)
+        <span class="ruby-identifier">file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">path</span>)             
+        <span class="ruby-identifier">file</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+                <span class="ruby-identifier">one_line</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\t&quot;</span>)
+                <span class="ruby-identifier">one_line_movie_info</span> = {<span class="ruby-identifier">one_line</span>[<span class="ruby-value">1</span>] =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">one_line</span>[<span class="ruby-value">2</span>]}
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]] <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span>
+                        <span class="ruby-identifier">data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]] = <span class="ruby-identifier">one_line_movie_info</span>
+                <span class="ruby-keyword">else</span>
+                        <span class="ruby-identifier">data</span>[<span class="ruby-identifier">one_line</span>[<span class="ruby-value">0</span>]][<span class="ruby-identifier">one_line</span>[<span class="ruby-value">1</span>]] = <span class="ruby-identifier">one_line</span>[<span class="ruby-value">2</span>]
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- load_data-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- load_data-method -->
 
     
       <div id="method-i-movies" class="method-detail ">
@@ -261,7 +283,7 @@ empty If there are two arguments, .base is read as the training set and
 
           
           <div class="method-source-code" id="movies-source">
-            <pre><span class="ruby-comment"># File PA2.rb, line 113</span>
+            <pre><span class="ruby-comment"># File PA2.rb, line 106</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">movies</span>(<span class="ruby-identifier">u</span>)
         <span class="ruby-keyword">return</span> <span class="ruby-ivar">@training_data</span>[<span class="ruby-identifier">u</span>.<span class="ruby-identifier">to_s</span>].<span class="ruby-identifier">keys</span> 
 <span class="ruby-keyword">end</span></pre>
@@ -297,7 +319,7 @@ what user u would rate movie m The returned predicted value = sum of
 
           
           <div class="method-source-code" id="predict-source">
-            <pre><span class="ruby-comment"># File PA2.rb, line 92</span>
+            <pre><span class="ruby-comment"># File PA2.rb, line 85</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">predict</span>(<span class="ruby-identifier">u</span>,<span class="ruby-identifier">m</span>)
         <span class="ruby-identifier">sum_of_rating</span> = <span class="ruby-value">0</span>
         <span class="ruby-identifier">sum_of_simularity</span> = <span class="ruby-value">0</span>
@@ -347,7 +369,7 @@ if user u did not rate movie m</p>
 
           
           <div class="method-source-code" id="rating-source">
-            <pre><span class="ruby-comment"># File PA2.rb, line 44</span>
+            <pre><span class="ruby-comment"># File PA2.rb, line 37</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">rating</span>(<span class="ruby-identifier">u</span>,<span class="ruby-identifier">m</span>)
         <span class="ruby-identifier">rating</span> = <span class="ruby-ivar">@training_data</span>[<span class="ruby-identifier">u</span>.<span class="ruby-identifier">to_s</span>][<span class="ruby-identifier">m</span>.<span class="ruby-identifier">to_s</span>]
         <span class="ruby-keyword">if</span> <span class="ruby-identifier">rating</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span>
@@ -387,7 +409,7 @@ results If k is omitted, all of the tests will be run</p>
 
           
           <div class="method-source-code" id="run_test-source">
-            <pre><span class="ruby-comment"># File PA2.rb, line 130</span>
+            <pre><span class="ruby-comment"># File PA2.rb, line 123</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">run_test</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">k</span>)
         <span class="ruby-identifier">predict_data</span> = {}
         <span class="ruby-identifier">count</span> = <span class="ruby-value">0</span>
@@ -442,7 +464,7 @@ positive correlation and −1 is total negative correlation.</p>
 
           
           <div class="method-source-code" id="similarity-source">
-            <pre><span class="ruby-comment"># File PA2.rb, line 55</span>
+            <pre><span class="ruby-comment"># File PA2.rb, line 48</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">similarity</span>(<span class="ruby-identifier">user1</span>,<span class="ruby-identifier">user2</span>)
         <span class="ruby-identifier">number_of_movie</span> = <span class="ruby-value">0</span>
         <span class="ruby-identifier">sum_user1</span> = <span class="ruby-value">0</span>
@@ -506,7 +528,7 @@ positive correlation and −1 is total negative correlation.</p>
 
           
           <div class="method-source-code" id="viewers-source">
-            <pre><span class="ruby-comment"># File PA2.rb, line 118</span>
+            <pre><span class="ruby-comment"># File PA2.rb, line 111</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">viewers</span>(<span class="ruby-identifier">m</span>)
         <span class="ruby-identifier">viewers_array</span> = []
         <span class="ruby-ivar">@training_data</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span>, <span class="ruby-identifier">movie</span><span class="ruby-operator">|</span>
