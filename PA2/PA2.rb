@@ -16,7 +16,6 @@ class MovieData
 			training_path = args[0] + "/u.data"
 		end
 		load_data(@training_data, training_path)
-		
 	end
 
 	#It takes a path to the folder containing the movie data (ml-100k) 
