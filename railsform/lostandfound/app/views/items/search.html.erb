@@ -1,0 +1,41 @@
+<%= form_tag("/items/search", method: "get") do %>
+  <%= label_tag(:q, "Search for Items:") %>
+  <p>
+    <%= label_tag(:q, "Title") %>
+    <%= text_field_tag(:title) %> 
+  </p>
+  <p>
+    <%= label_tag(:q, "Description:") %>
+    <%= text_field_tag(:description) %> 
+  </p>
+  <p>
+    <%= label_tag(:q, "Type") %>
+    <%= select_tag(:type, options_for_select([['Please select the type', ""],['book', "book"], 
+    ['clothing', "clothing"],['cellphone', "cellphone"], ['computer', "computer"]])) %>
+  </p>
+  <%= submit_tag("Search") %>
+<% end %>
+
+<% if @results && @results.first %>
+  <table>
+	  <thead>
+	    <tr>
+	      <th>Title</th>
+	      <th>Description</th>
+	      <th>Type</th>
+	    </tr>
+	  </thead>
+
+	  <tbody>
+	    <% @results.each do |result| %>
+	      <tr>
+	        <td><%= result.title %></td>
+	        <td><%= result.description %></td>
+	        <td><%= result.type %></td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+  </table>
+<% end %>
+
+
